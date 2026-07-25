@@ -2,108 +2,180 @@ from analyzer import analyze_password
 from scorer import calculate_score, get_strength
 from entropy import calculate_entropy, get_entropy_strength
 from report import generate_report
+from logger import logger
+from cli import parse_arguments
 
 
 
 def main():
 
-    password = input("Enter your password: ")
+    try:
+
+        # Get command line arguments
+        args = parse_arguments()
+
+        password = args.password
+
+
+        # Verbose information
+        if args.verbose:
+
+            print("[INFO] Starting password analysis")
+
+
+        logger.info("Password analysis started")
 
 
 
-    # Analyze password
+        # Analyze password
 
-    results = analyze_password(password)
+        if args.verbose:
+
+            print("[INFO] Running security checks")
 
 
-
-    # Calculate entropy
-
-    entropy = calculate_entropy(password, results)
-
-    entropy_strength = get_entropy_strength(entropy)
+        results = analyze_password(password)
 
 
 
-    # Calculate security score
+        # Calculate entropy
 
-    score = calculate_score(results, entropy)
+        if args.verbose:
 
-    strength = get_strength(score)
-
-
-
-    print("\n===== PassGuard Report =====")
+            print("[INFO] Calculating entropy")
 
 
+        entropy = calculate_entropy(
+            password,
+            results
+        )
 
-    print(f"\nPassword Length: {results['length']}")
 
-    print(f"Uppercase: {results['has_upper']}")
-
-    print(f"Lowercase: {results['has_lower']}")
-
-    print(f"Numbers: {results['has_digit']}")
-
-    print(f"Special Characters: {results['has_special']}")
+        entropy_strength = get_entropy_strength(
+            entropy
+        )
 
 
 
-    print("\n----------------------------")
+        # Calculate score
+
+        score = calculate_score(
+            results,
+            entropy
+        )
+
+
+        strength = get_strength(
+            score
+        )
 
 
 
-    print(f"Security Score: {score}/100")
+        # Display report
 
-    print(f"Password Strength: {strength}")
-
-
-
-    print(f"Entropy: {entropy} bits")
-
-    print(f"Entropy Strength: {entropy_strength}")
+        print("\n===== PassGuard Report =====")
 
 
 
-    # Warnings
+        print(f"\nPassword Length: {results['length']}")
 
-    if results["warnings"]:
+        print(f"Uppercase: {results['has_upper']}")
 
-        print("\n⚠️ Warnings:")
+        print(f"Lowercase: {results['has_lower']}")
 
-        for warning in results["warnings"]:
+        print(f"Numbers: {results['has_digit']}")
 
-            print(f"- {warning}")
-
-
-
-    # Suggestions
-
-    if results["suggestions"]:
-
-        print("\n💡 Suggestions:")
-
-        for suggestion in results["suggestions"]:
-
-            print(f"- {suggestion}")
+        print(f"Special Characters: {results['has_special']}")
 
 
 
-    # Generate JSON report
-
-    report_file = generate_report(
-        password,
-        results,
-        score,
-        strength,
-        entropy,
-        entropy_strength
-    )
+        print("\n----------------------------")
 
 
-    print("\n📄 Report Generated:")
 
-    print(report_file)
+        print(f"Security Score: {score}/100")
+
+        print(f"Password Strength: {strength}")
+
+        print(f"Entropy: {entropy} bits")
+
+        print(f"Entropy Strength: {entropy_strength}")
+
+
+
+        # Warnings
+
+        if results["warnings"]:
+
+            print("\n⚠️ Warnings:")
+
+
+            for warning in results["warnings"]:
+
+                print(f"- {warning}")
+
+
+
+        # Suggestions
+
+        if results["suggestions"]:
+
+            print("\n💡 Suggestions:")
+
+
+            for suggestion in results["suggestions"]:
+
+                print(f"- {suggestion}")
+
+
+
+        # Generate JSON report only with --report
+
+        if args.report:
+
+
+            if args.verbose:
+
+                print("[INFO] Generating JSON report")
+
+
+            report_file = generate_report(
+
+                password,
+
+                results,
+
+                score,
+
+                strength,
+
+                entropy,
+
+                entropy_strength
+
+            )
+
+
+            logger.info("Security report generated")
+
+
+            print("\n📄 Report Generated:")
+
+            print(report_file)
+
+
+
+    except Exception as error:
+
+
+        logger.error(
+            f"Application error: {error}"
+        )
+
+
+        print("\n❌ An error occurred.")
+
+        print("Check logs/passguard.log for details.")
 
 
 
