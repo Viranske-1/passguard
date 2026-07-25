@@ -1,4 +1,4 @@
-from config import COMMON_PASSWORD_FILE
+from app.config import COMMON_PASSWORD_FILE
 
 
 special_characters = "!@#$%^&*()-_=+[]{}|\\:;\"'<>,.?/"

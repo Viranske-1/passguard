@@ -9,3 +9,12 @@ venv/
 .vscode/
 
 *.log
+
+# Python package files
+*.egg-info/
+
+# Generated reports
+reports/*.json
+
+# Logs
+logs/*.log

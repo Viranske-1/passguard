@@ -1,9 +1,9 @@
-from analyzer import analyze_password
-from scorer import calculate_score, get_strength
-from entropy import calculate_entropy, get_entropy_strength
-from report import generate_report
-from logger import logger
-from cli import parse_arguments
+from app.analyzer import analyze_password
+from app.scorer import calculate_score, get_strength
+from app.entropy import calculate_entropy, get_entropy_strength
+from app.report import generate_report
+from app.logger import logger
+from app.cli import parse_arguments
 
 
 
@@ -107,7 +107,7 @@ def main():
 
         if results["warnings"]:
 
-            print("\n⚠️ Warnings:")
+            print("\nWarnings:")
 
 
             for warning in results["warnings"]:
@@ -120,7 +120,7 @@ def main():
 
         if results["suggestions"]:
 
-            print("\n💡 Suggestions:")
+            print("\nSuggestions:")
 
 
             for suggestion in results["suggestions"]:
@@ -159,7 +159,7 @@ def main():
             logger.info("Security report generated")
 
 
-            print("\n📄 Report Generated:")
+            print("\nReport Generated:")
 
             print(report_file)
 
@@ -173,7 +173,7 @@ def main():
         )
 
 
-        print("\n❌ An error occurred.")
+        print("\nAn error occurred.")
 
         print("Check logs/passguard.log for details.")
 
